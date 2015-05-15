@@ -12,12 +12,9 @@ M4SCS([
 //			2	-	true
 //			3	-	history
 // Input parameters:	3	-	history = (arcA, ...)
-//			4	-	parameters = (composition, ...)
+//			4	-	parameters = (result_set, ...)
 //			5	-	logging
-// Execution input time complexity:	unlimited, logging dependable
-// Execution output time complexity:	O(n) + logging time
-// Execution input space complexity:	unlimited, logging dependable
-// Execution output space complexity:	O(n) + logging time
+
 ])
 
 procedure(set_add_element_from_first_domain,

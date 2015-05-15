@@ -6,14 +6,18 @@ M4SCS([
 // Description: add elements of domain (user select) to specified set. iterator_create_procedure is optional
 ///////////////////////////////////////////////////////
 //      Author: VOA
-//        Date: 15.05.2015
+//        Date: 05.01.2015
 //    Location: /lib/set/create_set_of_rel_first_domain
 // Output parameters:	1	-	state
 //			2	-	true
 //			3	-	history
 // Input parameters:	3	-	history = (args_chain=(relationA), ...)
-//			4	-	parameters = (result, (then_routine, then_parameters), (else_routine, else_parameters) ...)
+//			4	-	parameters = (result, n_domain_procedure, iterator_create_procedure ...)
 //			5	-	logging
+// Execution input time complexity:	unlimited, logging dependable
+// Execution output time complexity:	O(n*m) + logging time
+// Execution input space complexity:	unlimited, logging dependable
+// Execution output space complexity:	O(n*m) + logging time
 ])
 
 procedure(set_create_set_of_rel_first_domain,
@@ -29,6 +33,7 @@ M4SCS(	[[
 		iterator_create_apa_output = "/lib/iterator/create_APA_output/iterator_create_APA_output",
 		iterator_embedded_cycle_filter = "/lib/iterator/embedded_cycle_filter/iterator_embedded_cycle_filter",
 		set_add_element_from_first_domain = "/lib/set/add_element_from_first_domain/set_add_element_from_first_domain",
+		set_add_element_from_second_domain = "/lib/set/add_element_from_second_domain/set_add_element_from_second_domain",
 		
 		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7, prmp8,
 		prmg1, prmg2, prmg3, prmg4,prmg5, prmd1, prmd2, prmd3, prmf1
@@ -42,6 +47,7 @@ M4SEC(	[[
 		iterator_create_apa_output = /../iterator/create_APA_output[SYFIX]/iterator_create_APA_output,
 		iterator_embedded_cycle_filter = /../iterator/embedded_cycle_filter[SYFIX]/iterator_embedded_cycle_filter,
 		set_add_element_from_first_domain = /../set/add_element_from_first_domain[SYFIX]/set_add_element_from_first_domain,
+		set_add_element_from_second_domain = /../set/add_element_from_second_domain[SYFIX]/set_add_element_from_second_domain,
 		
 		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7, prmp8,
 		prmg1, prmg2, prmg3, prmg4,prmg5, prmd1, prmd2, prmd3, prmf1
@@ -49,7 +55,7 @@ M4SEC(	[[
 	[{
 		state, true, history, parameters, logging,
 		link, outlink1, outlink2, result_set_link,
-		result_set, args_chain, args_chain2,
+		result_set, args_chain, iterator_create, args_chain2, n_domain_procedure,
 		relationA, singleton, arc2, empty, descr
 	}], 
 	{[ 
@@ -78,9 +84,23 @@ waitReturn([1_: fixed_: descr])
 
 ifVarAssign([1_: link],, final)
 
+call([1_: fixed_: chain_get_next, 2_: fixed_: prmg3 = [{1_: link, 2_: link, 3_: n_domain_procedure}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+ifVarAssign([1_: link],, final)
+
+call([1_: fixed_: chain_get_next, 2_: fixed_: prmg5 = [{1_: link, 2_: link, 3_: iterator_create}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+ifVarAssign([1_: iterator_create], do)
+
+varAssign([1_: assign_: iterator_create, 2_: fixed_: iterator_create_apa_output])
+
 label(do)
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp1 = [{1_: iterator_create_apa_output, 2_: outlink1, 3_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prmp1 = [{1_: iterator_create, 2_: outlink1, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
@@ -102,7 +122,7 @@ call([1_: fixed_: chain_push_first, 2_: fixed_: prmp4 = [{1_: outlink2, 2_: resu
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prmp5 = [{1_: result_set_link, 2_: set_add_element_from_first_domain, 3_: result_set_link, 4_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push, 2_: fixed_: prmp5 = [{1_: result_set_link, 2_: n_domain_procedure, 3_: result_set_link, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
@@ -114,7 +134,7 @@ call([1_: fixed_: chain_push, 2_: fixed_: prmp7 = [{1_: outlink1, 2_: relationA,
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: iterator_embedded_cycle_filter, 2_: fixed_: prmf1 = [{1_: state, 2_: true, 3_: history, 4_: outlink1, 5_: logging}], 3_: assign_: descr])
+call([1_: fixed_: iterator_embedded_cycle_filter, 2_: fixed_: prmf1 = [{1_: empty, 2_: empty, 3_: history, 4_: outlink1, 5_: logging}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 

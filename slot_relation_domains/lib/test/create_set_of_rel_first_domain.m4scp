@@ -14,9 +14,7 @@ M4SCS(	[[
 		chain_push = "/lib/chain/push/chain_push",
 		chain_push_first = "/lib/chain/push_first/chain_push_first",
 		chain_destroy = "/lib/chain/destroy/chain_destroy",
-		set_create_set_of_rel_first_domain = "/lib/set/create_set_of_rel_first_domain/set_create_set_of_rel_first_domain",
-		set_add_element_from_first_domain = "/lib/set/add_element_from_first_domain/set_add_element_from_first_domain",
-		set_add_element_from_second_domain = "/lib/set/add_element_from_second_domain/set_add_element_from_second_domain",
+		set_create_set_of_rel_first_domain = "/lib/set/create_set_of_rel_first_domain/set_create_set_of_rel_first_domain"
 
 		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1
 	]])
@@ -24,8 +22,6 @@ M4SEC(	[[
 		chain_push = /../chain/push[SYFIX]/chain_push,
 		chain_push_first = /../chain/push_first[SYFIX]/chain_push_first,
 		chain_destroy = /../chain/destroy[SYFIX]/chain_destroy,
-		set_add_element_from_first_domain = /../set/add_element_from_first_domain[SYFIX]/set_add_element_from_first_domain,
-		set_add_element_from_second_domain = /../set/add_element_from_second_domain[SYFIX]/set_add_element_from_second_domain,
 
 		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1
 	]]), 
@@ -41,6 +37,8 @@ M4SEC(	[[
 DBG(M4SCS(print([1_: fixed_: enter_message])))
 
 genEl([1_: assign_: node_: const_: empty])
+
+genEl([1_: assign_: node_: const_: true])
 
 genEl([1_: assign_: node_: const_: relA])
 
@@ -95,15 +93,11 @@ call([1_: fixed_: chain_push_first, 2_: fixed_: prmp3 = [{1_: args_chain, 2_: hi
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp4 = [{1_: set_add_element_from_second_domain, 2_: parameters, 3_: logging}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm1 = [{1_: result, 3_: parameters, 4_: logging}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prm1 = [{1_: parameters, 2_: result, 3_: parameters, 4_: logging}], 3_: assign_: descr])
-
-waitReturn([1_: fixed_: descr])
-
-call([1_: fixed_: set_create_set_of_rel_first_domain, 2_: fixed_: prmc1 = [{1_: state, 2_: empty, 3_: history, 4_: parameters, 5_: logging}], 3_: assign_: descr])
+call([1_: fixed_: set_create_set_of_rel_first_domain, 2_: fixed_: prmc1 = [{1_: state, 2_: true, 3_: history, 4_: parameters, 5_: logging}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
@@ -130,6 +124,7 @@ eraseEl([1_: fixed_: f_: nodeE])
 eraseEl([1_: fixed_: f_: result])
 eraseEl([1_: fixed_: f_: state])
 eraseEl([1_: fixed_: f_: empty])
+eraseEl([1_: fixed_: f_: true])
 
 DBG(M4SCS(print([1_: fixed_: leave_message])))
 
