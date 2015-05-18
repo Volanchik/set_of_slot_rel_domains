@@ -20,6 +20,9 @@ procedure(set_create_set_of_rel_first_domain,
 M4SCS(	[[
 		enter_message = /"\n\nset_create_set_of_rel_first_domain: entering\n\n"/,
 		leave_message = /"\n\nset_create_set_of_rel_first_domain: leaving\n\n"/,
+		iterator_in_message = /"\n\n--------------iterator in: leaving\n\n"/,
+		iterator_out_message = /"\n\n--------------iterator out: leaving\n\n"/,
+		routine_begin_message = /"\n\n--------------routine_begin\n\n"/,
 
 		chain_get_next = "/lib/chain/get_next/chain_get_next",
 		chain_push = "/lib/chain/push/chain_push",
@@ -29,9 +32,10 @@ M4SCS(	[[
 		iterator_create_apa_output = "/lib/iterator/create_APA_output/iterator_create_APA_output",
 		iterator_embedded_cycle_filter = "/lib/iterator/embedded_cycle_filter/iterator_embedded_cycle_filter",
 		set_add_element_from_first_domain = "/lib/set/add_element_from_first_domain/set_add_element_from_first_domain",
+
+		log_get = "/lib/log/get/log_get",
 		
-		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7, prmp8,
-		prmg1, prmg2, prmg3, prmg4,prmg5, prmd1, prmd2, prmd3, prmf1
+		prm1,prm2,prm3,prm4,prm5,prm6,prm7,prm8,prm9,prm10,prm11,prm12,prm13,prm14,prm15,prm16,prm17,prm18,prm19,prm20,prm21,prm22,prm23,prm24
 	]])
 M4SEC(	[[
 		chain_get_next = /../chain/get_next[SYFIX]/chain_get_next,
@@ -43,11 +47,12 @@ M4SEC(	[[
 		iterator_embedded_cycle_filter = /../iterator/embedded_cycle_filter[SYFIX]/iterator_embedded_cycle_filter,
 		set_add_element_from_first_domain = /../set/add_element_from_first_domain[SYFIX]/set_add_element_from_first_domain,
 		
-		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7, prmp8,
-		prmg1, prmg2, prmg3, prmg4,prmg5, prmd1, prmd2, prmd3, prmf1
+		prm1,prm2,prm3,prm4,prm5,prm6,prm7,prm8,prm9,prm10,prm11,prm12,prm13,prm14,prm15,prm16,prm17,prm18,prm19,prm20,prm21,prm22,prm23,prm24
 	]]), 
 	[{
-		state, true, history, parameters, logging,
+		state, true, history, parameters, 
+		then_chain, else_chain, then_routine, then_parameters, else_routine, else_parameters,
+		logging, logger, log, dogger,
 		link, outlink1, outlink2, result_set_link,
 		result_set, args_chain, args_chain2,
 		relationA, singleton, arc2, empty, descr
@@ -62,29 +67,46 @@ M4SEC(	[[
 
 DBG(M4SCS(print([1_: fixed_: enter_message])))
 
+
 genEl([1_: assign_: node_: const_: empty])
 
-call([1_: fixed_: chain_get_next, 2_: fixed_: prmg1 = [{1_: history, 2_: link, 3_: args_chain}], 3_: assign_: descr])
+call([1_: fixed_: log_get, 2_: fixed_: prm1 = [{1_: logging, 2_: logger, 3_: log, 4_: dogger}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_get_next, 2_: fixed_: prmg4 = [{1_: args_chain, 2_: args_chain2, 3_: relationA}], 3_: assign_: descr])
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm2 = [{1_: history, 2_: link, 3_: args_chain}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_get_next, 2_: fixed_: prmg2 = [{1_: parameters, 2_: link, 3_: result_set}], 3_: assign_: descr])
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm3 = [{1_: args_chain, 2_: args_chain2, 3_: relationA}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-ifVarAssign([1_: link],, final)
+ifVarAssign([1_: relationA],, error)
+
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm4 = [{1_: parameters, 2_: link, 3_: result_set}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+ifVarAssign([1_: result_set],, error)
+
+//// Add check if then and else chains exists
+
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm5 = [{1_: link, 2_: link, 3_: then_chain}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm6 = [{1_: link, 2_: link, 3_: else_chain}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
 
 label(do)
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp1 = [{1_: iterator_create_apa_output, 2_: outlink1, 3_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm7 = [{1_: iterator_create_apa_output, 2_: outlink1, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prmp2 = [{1_: outlink1, 2_: empty, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push, 2_: fixed_: prm8 = [{1_: outlink1, 2_: empty, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
@@ -94,45 +116,127 @@ genElStr3([
 	3_: fixed_: result_set
 ])
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp3 = [{1_: singleton, 2_: outlink2, 3_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm9 = [{1_: singleton, 2_: outlink2, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp4 = [{1_: outlink2, 2_: result_set_link, 3_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm10 = [{1_: outlink2, 2_: result_set_link, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prmp5 = [{1_: result_set_link, 2_: set_add_element_from_first_domain, 3_: result_set_link, 4_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push, 2_: fixed_: prm11 = [{1_: result_set_link, 2_: set_add_element_from_first_domain, 3_: result_set_link, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prmp6 = [{1_: outlink1, 2_: result_set_link, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push, 2_: fixed_: prm12 = [{1_: outlink1, 2_: result_set_link, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push, 2_: fixed_: prmp7 = [{1_: outlink1, 2_: relationA, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_push, 2_: fixed_: prm13 = [{1_: outlink1, 2_: relationA, 3_: outlink1, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: iterator_embedded_cycle_filter, 2_: fixed_: prmf1 = [{1_: state, 2_: true, 3_: history, 4_: outlink1, 5_: logging}], 3_: assign_: descr])
+DBG(M4SCS(print([1_: fixed_: iterator_in_message])))
+
+call([1_: fixed_: iterator_embedded_cycle_filter, 2_: fixed_: prm14 = [{1_: state, 2_: true, 3_: history, 4_: outlink1, 5_: logging}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+
+DBG(M4SCS(print([1_: fixed_: iterator_out_message])))
+
+call([1_: fixed_: chain_push, 2_: fixed_: prm15 = [{1_: history, 2_: result_set, 3_: history, 4_: logging}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+///////TO DO: add control that domain consists of nodes and... ???
+
+ifVarAssign([
+	1_: result_set
+], domain_success,error)
+
+label(domain_success)
+DBG(M4SCS(print([1_: fixed_: routine_begin_message])))
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm16 = [{1_: then_chain, 2_: then_chain, 3_: then_routine}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+ifVarAssign([
+	1_: then_chain
+], then_parameters_is_not_empty,then_parameters_is_empty)
+
+label(then_parameters_is_not_empty)
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm17 = [{1_: then_chain, 2_: then_chain, 3_: then_parameters}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr],then_routine_assign,then_routine_assign)
+
+label(then_parameters_is_empty)
+varAssign([
+	1_: assign_: then_parameters,
+	2_: fixed_: empty
+])
+
+label(then_routine_assign)
+
+ifCoin([
+	1_: then_routine,
+	2_: then_parameters
+], state_true)
+
+call([1_: fixed_: then_routine, 2_: fixed_: prm18 = [{1_: state, 2_: true, 3_: history, 4_: then_parameters, 5_: logging}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr], final, final)
+
+label(state_true)
+varAssign([
+	1_: assign_: state,
+	2_: fixed_: true
+],final)
+
+label(error)
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm19 = [{1_: else_chain, 2_: else_chain, 3_: else_routine}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+ifVarAssign([
+	1_: else_chain
+], else_parameters_is_not_empty, else_parameters_is_empty)
+
+label(else_parameters_is_not_empty)
+call([1_: fixed_: chain_get_next, 2_: fixed_: prm20 = [{1_: else_chain, 2_: else_chain, 3_: else_parameters}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+label(else_parameters_is_empty)
+varAssign([
+	1_: assign_: else_parameters,
+	2_: fixed_: empty
+])
+
+label(else_routine_assign)
+ifCoin([
+	1_: else_routine,
+	2_: else_parameters
+], final)
+
+call([1_: fixed_: else_routine, 2_: fixed_: prm21 = [{1_: state, 2_: true, 3_: history, 4_: else_parameters, 5_: logging}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
 label(final)
-call([1_: fixed_: chain_destroy,	2_: fixed_: prmd1 = [{1_: outlink1, 2_: empty}], 3_: assign_: descr])
+call([1_: fixed_: chain_destroy,	2_: fixed_: prm22 = [{1_: outlink1, 2_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([	1_: fixed_: chain_destroy, 2_: fixed_: prmd2 = [{1_: result_set_link, 2_: empty}],	3_: assign_: descr])
+call([	1_: fixed_: chain_destroy, 2_: fixed_: prm23 = [{1_: result_set_link, 2_: empty}],	3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([	1_: fixed_: chain_destroy, 2_: fixed_: prmd3 = [{1_: outlink2, 2_: empty}], 3_: assign_: descr])
+call([	1_: fixed_: chain_destroy, 2_: fixed_: prm24 = [{1_: outlink2, 2_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
 eraseEl([1_: fixed_: f_: singleton])
-
 
 eraseEl([1_: fixed_: f_: empty])
 

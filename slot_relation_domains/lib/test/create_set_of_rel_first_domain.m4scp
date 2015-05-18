@@ -14,20 +14,21 @@ M4SCS(	[[
 		chain_push = "/lib/chain/push/chain_push",
 		chain_push_first = "/lib/chain/push_first/chain_push_first",
 		chain_destroy = "/lib/chain/destroy/chain_destroy",
-		set_create_set_of_rel_first_domain = "/lib/set/create_set_of_rel_first_domain/set_create_set_of_rel_first_domain"
+		set_create_set_of_rel_first_domain = "/lib/set/create_set_of_rel_first_domain/set_create_set_of_rel_first_domain",
 
-		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1
+		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1,prm2,prm3,prm4,prm5,prm6, prm7
 	]])
 M4SEC(	[[
 		chain_push = /../chain/push[SYFIX]/chain_push,
 		chain_push_first = /../chain/push_first[SYFIX]/chain_push_first,
 		chain_destroy = /../chain/destroy[SYFIX]/chain_destroy,
 
-		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1
+		prmp1,prmp2,prmp3,prmp4,prmc1,prmd1,prmd2, prmd3,prm1,prm2,prm3,prm4,prm5,prm6, prm7
 	]]), 
 	[{
 		relA, nodeA, nodeB, nodeC, nodeD, nodeE,
 		history, parameters, args_chain,
+		then_routine, else_routine,
 		empty, state, result, logging,
 		arc2, arc4, descr
 	}], 
@@ -66,6 +67,10 @@ genElStr5([
 
 genEl([1_: assign_: node_: const_: state])
 
+genEl([1_: assign_: node_: const_: then_routine])
+
+genEl([1_: assign_: node_: const_: else_routine])
+
 genEl([1_: assign_: node_: const_: result])
 
 genEl([1_: assign_: node_: const_: logging])
@@ -85,15 +90,39 @@ M4SCS(
 	printEl([1_: fixed_: relA])
 )
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp1 = [{1_: relA, 2_: args_chain, 3_: logging}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prmp1 = [{1_: relA, 2_: args_chain, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prmp3 = [{1_: args_chain, 2_: history, 3_: logging}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prmp3 = [{1_: args_chain, 2_: history, 3_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 
-call([1_: fixed_: chain_push_first, 2_: fixed_: prm1 = [{1_: result, 3_: parameters, 4_: logging}], 3_: assign_: descr])
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm1 = [{1_: else_routine, 3_: args_chain, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push, 2_: fixed_: prm2 = [{1_: args_chain, 2_: else_routine, 3_: args_chain, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm3 = [{1_: args_chain, 3_: parameters, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push_first, 2_: fixed_: prm4 = [{1_: then_routine, 3_: args_chain, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push, 2_: fixed_: prm5 = [{1_: args_chain, 2_: then_routine, 3_: args_chain, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push, 2_: fixed_: prm6 = [{1_: parameters, 2_: args_chain, 3_: parameters, 4_: empty}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+call([1_: fixed_: chain_push, 2_: fixed_: prm7 = [{1_: parameters, 2_: result, 3_: parameters, 4_: empty}], 3_: assign_: descr])
 
 waitReturn([1_: fixed_: descr])
 

@@ -21,23 +21,25 @@ procedure(set_add_element_from_first_domain,
 M4SCS(	[[
 		enter_message = /"\n\nset_add_element_from_first_domain: entering\n\n"/,
 		leave_message = /"\n\nset_add_element_from_first_domain: leaving\n\n"/,
+		log_message = /"\n\n-------------------log\n\n"/,
 
 		chain_get_next = "/lib/chain/get_next/chain_get_next",
 		chain_get_next_singlet = "/lib/chain/get_next_singlet/chain_get_next_singlet",
+		log_get = "/lib/log/get/log_get",
 
-		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7,
+		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7,prml1,prml2,
 		prmg1, prmg2, prmg3, prmg4, prmg5, prmd1, prmd2, prmd3, prmf1
 	]])
 M4SEC(	[[		
 		chain_get_next = /../chain/get_next[SYFIX]/chain_get_next,
 		chain_get_next_singlet = /../chain/get_next[SYFIX]/chain_get_next_singlet,
 
-		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7,
+		prmp1, prmp2, prmp3, prmp4, prmp5, prmp6, prmp7,prml1,prml2,
 		prmg1, prmg2, prmg3, prmg4, prmg5, prmd1, prmd2, prmd3, prmf1
 	]]), 
 	[{
 		state, true, history, parameters, logging, empty, descr,
-		arcA, result_set, 
+		arcA, result_set, logger, log, dogger,
 		link, 
 		relationA, elementArcA, elem1, elemA, newElementArc
 	}], 
@@ -50,6 +52,10 @@ M4SEC(	[[
 	]}) 
 
 DBG(M4SCS(print([1_: fixed_: enter_message])))
+
+call([1_: fixed_: log_get, 2_: fixed_: prml1 = [{1_: logging, 2_: logger, 3_: log, 4_: dogger}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
 
 genEl([1_: assign_: node_: const_: empty])
 
@@ -73,12 +79,34 @@ searchElStr3([
 	3_: assign_: const_: elemA
 ], ,)
 
+//reason
+ifVarAssign([
+	1_: log
+], , not_log_reason)
+DBG(M4SCS(print([1_: fixed_: log_message])))
+call([1_: fixed_: logger, 2_: fixed_: prml2 = [{1_: log, 2_: arcA}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+label(not_log_reason)
+
 label(add_to_res_set)
 genElStr3([
 	1_: fixed_: result_set,
 	2_: assign_: arc_: const_: actual_: pos_: permanent_: newElementArc,
 	3_: fixed_: elem1
 ])
+
+//consequence
+ifVarAssign([
+	1_: log
+], , not_log_consequence)
+
+call([1_: fixed_: logger, 2_: fixed_: prml2 = [{1_: log, 2_: newElementArc}], 3_: assign_: descr])
+
+waitReturn([1_: fixed_: descr])
+
+label(not_log_consequence)
 
 label(final)
 eraseEl([1_: fixed_: f_: empty])
